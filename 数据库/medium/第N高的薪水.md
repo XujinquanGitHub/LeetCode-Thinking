@@ -45,25 +45,29 @@ https://leetcode-cn.com/problems/nth-highest-salary/
 > ```sql
 > SELECT Salary FROM Employee GROUP BY Salary  ORDER BY Salary DESC
 > ```
-> 
+>
 > 如此之后再针对结果集做排序并且记录名次，SQL如下：
-> 
->    ```sql
->    SELECT ss.Salary, @rowno:=@rowno+1 AS Rank FROM  (SELECT Salary FROM Employee GROUP BY Salary  ORDER BY Salary DESC) AS ss,(SELECT (@rowno :=0) ) AS b
->    ```
->    
->    如此之后可以得到两列，薪水和薪水排名，接下来只需要将参数N和排序对比即可。最终SQL如下：
->    
->    ```sql
+>
+> ```sql
+> SELECT ss.Salary, @rowno:=@rowno+1 AS Rank FROM  
+> (SELECT Salary FROM Employee GROUP BY Salary  ORDER BY Salary DESC) AS ss,
+> (SELECT (@rowno :=0) ) AS b
+> ```
+>
+> 如此之后可以得到两列，薪水和薪水排名，接下来只需要将参数N和排序对比即可。最终SQL如下：
+>
+> ```sql
 > CREATE FUNCTION getNthHighestSalary(N INT) RETURNS INT
 > BEGIN
->  RETURN (
->        SELECT  Salary FROM (SELECT ss.Salary, @rowno:=@rowno+1 AS Rank FROM  (SELECT Salary FROM Employee GROUP BY Salary  ORDER BY Salary DESC) AS ss,(SELECT (@rowno :=0) ) AS b) AS ts WHERE Rank=N
->  );
+> RETURN (
+>     SELECT  Salary FROM (SELECT ss.Salary, @rowno:=@rowno+1 AS Rank FROM  
+>     (SELECT Salary FROM Employee GROUP BY Salary  ORDER BY Salary DESC) AS ss,
+>     (SELECT (@rowno :=0) ) AS b) AS ts WHERE Rank=N
+> );
 > END
 > ```
+>
 > 
->  
 
 ## 结果
 
